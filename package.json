@@ -1,5 +1,5 @@
 {
-  "name": "rql",
+  "name": "rollun-rql",
   "version": "0.3.3",
   "author": "Kris Zyp",
   "contributors": [
@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/kriszyp/rql"
+    "url": "https://github.com/rollun-com/rollun-rql.git"
   },
   "maintainers": [
     {
