@@ -88,7 +88,6 @@ function encodeString(s) {
                     .replace("!", "%21");
             }
         }
-        console.log(string);
         return string;
     }
 
