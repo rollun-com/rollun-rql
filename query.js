@@ -78,6 +78,20 @@ function encodeString(s) {
 		return s;
 }
 
+    function encodeStringValue(string) {
+        if (typeof string === "string") {
+            string = encodeURIComponent(string);
+            while (string.match(/[\(\)\-\!]/g)) {
+                string = string.replace("(", "%28")
+                    .replace(")", "%29")
+                    .replace("-", "%2D")
+                    .replace("!", "%21");
+            }
+        }
+        console.log(string);
+        return string;
+    }
+
 exports.encodeValue = function(val) {
 		var encoded;
 		if (val === null) val = 'null';
@@ -90,7 +104,7 @@ exports.encodeValue = function(val) {
 					val = val.toString();
 					var i = val.lastIndexOf('/');
 					type = val.substring(i).indexOf('i') >= 0 ? "re" : "RE";
-					val = encodeString(val.substring(1, i));
+                    val = encodeStringValue(val.substring(1, i));
 					encoded = true;
 				}
 				if(type === "object"){
@@ -99,12 +113,12 @@ exports.encodeValue = function(val) {
 						encoded = true;
 				}
 				if(type === "string") {
-						val = encodeString(val);
+                    val = encodeStringValue(val);
 						encoded = true;
 				}
 				val = [type, val].join(":");
 		}
-		if (!encoded && typeof val === "string") val = encodeString(val);
+    if (!encoded && typeof val === "string") val = encodeStringValue(val);
 		return val;
 };
 
