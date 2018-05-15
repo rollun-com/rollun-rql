@@ -293,9 +293,9 @@
     exports.converters["default"] = exports.converters.auto;
 
 // this can get replaced by the chainable query if query.js is loaded
-    exports.Query = function () {
-        this.name = "and";
-        this.args = [];
+    exports.Query = function (name, args) {
+        this.name = name || "and";
+        this.args = args || [];
     };
     return exports;
 });
