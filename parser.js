@@ -151,10 +151,21 @@
             }
             return obj;
         };
+
+        function removeWrongRootNode(query) {
+            var firstChildNodeName = query.args[0].name;
+            if (query.args.length < 2) {
+                var newTopTerm = topTerm.args[0];
+                newTopTerm.cache = topTerm.cache;
+                topTerm = newTopTerm;
+            }
+        };
         removeParentProperty(topTerm);
         if (!topTerm.name) {
             topTerm.name = topTermName;
         }
+        removeWrongRootNode(topTerm)
+
         return topTerm;
     };
 
@@ -283,6 +294,25 @@
             if (s.substring(0, 2) !== '.*') s = '^' + s; else s = s.substring(2);
             if (s.substring(s.length - 2) !== '.*') s = s + '$'; else s = s.substring(0, s.length - 2);
             return new RegExp(s, 'i');
+        },
+
+        float: function (x) {
+            return exports.converters.number(x)
+        },
+
+        integer: function (x) {
+            x = exports.converters.number(x);
+            var absoluteX;
+            if (x >= 0) {
+                absoluteX = Math.floor(x)
+            } else {
+                absoluteX = Math.ceil(x)
+            }
+            if (x % absoluteX === 0) {
+                return x;
+            } else {
+                throw new URIError("Invalid integer: " + x);
+            }
         }
     };
 
@@ -293,9 +323,9 @@
     exports.converters["default"] = exports.converters.auto;
 
 // this can get replaced by the chainable query if query.js is loaded
-    exports.Query = function (name, args) {
-        this.name = name || "and";
-        this.args = args || [];
+    exports.Query = function () {
+        this.name = "and";
+        this.args = [];
     };
     return exports;
 });
