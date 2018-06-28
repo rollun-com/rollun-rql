@@ -126,6 +126,10 @@
 
 	function encodeStringValue(string) {
 		if (typeof string === "string") {
+			if (string[0] === '+' || string[0] === '-') {
+				var index = string.slice(0, 1);
+				string = string.substr(1);
+			}
 			string = encodeURIComponent(string);
 			while (string.match(/[\(\)\-\_\.\~\!]/g)) {
 				string = string.replace("(", "%28")
@@ -134,10 +138,11 @@
 					.replace("_", "%5F")
 					.replace(".", "%2E")
 					.replace("~", "%7E")
-					.replace("!", "%21");
 			}
 		}
-		console.log(string);
+		if (index) {
+			string = index + string;
+		}
 		return string;
 	}
 
