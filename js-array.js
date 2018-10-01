@@ -56,15 +56,9 @@
 		match: filter(function (value, regex) {
 			return new RegExp(regex).test(value);
 		}),
-		in: filter(function (value, values) {
-			return contains(values, value);
-		}),
-		out: filter(function (value, values) {
-			return !contains(values, value);
-		}),
 
-		contains: function (field, value) {
-			var valueRegexp = new RegExp(".?(" + value + ").?", 'g'),
+		like: function (field, value) {
+			var valueRegexp = new RegExp(".+(" + value + ").+", 'g'),
 				items = this,
 				result = [];
 			for (var i = 0; i < items.length; i++) {
@@ -75,6 +69,37 @@
 			}
 			return result;
 		},
+
+		alike: function (field, value) {
+			var valueRegexp = new RegExp(".+(" + value + ").+", 'gi'),
+				items = this,
+				result = [];
+			for (var i = 0; i < items.length; i++) {
+				var matches = ('' + items[i][field]).match(valueRegexp);
+				if (matches && matches[0]) {
+					result.push(items[i]);
+				}
+			}
+			return result;
+		},
+
+		in: filter(function (value, values) {
+			return contains(values, value);
+		}),
+		out: filter(function (value, values) {
+			return !contains(values, value);
+		}),
+
+		contains: filter(function (array, value) {
+			if (typeof value == "function") {
+				return array instanceof Array && each(array, function (v) {
+					return value.call([v]).length;
+				});
+			}
+			else {
+				return array instanceof Array && contains(array, value);
+			}
+		}),
 
 		excludes: filter(function (array, value) {
 			if (typeof value == "function") {
@@ -103,8 +128,8 @@
 				}
 			} finally {
 				// cleanup markers
-				for (var i = 0, l = items.length; i < l; i++) {
-					delete items[idProperty];
+				for (var i = 0; i < items.length; i++) {
+					delete items[i][idProperty];
 				}
 			}
 			return items;
@@ -128,10 +153,6 @@
 				items[i] = entry;
 			}
 			var notNeededItems = node.call(items);
-			// var notNeededIds = [];
-			// for (i = 0; i < notNeededItems.length; i++) {
-			// 	notNeededIds.push(notNeededItems[i].__rqlNotId);
-			// }
 			for (i = 0; i < items.length; i++) {
 				var itemRqlId = items[i].__rqlId;
 				if (notNeededItems.find(function (notNeededItem) {
@@ -142,7 +163,7 @@
 					delete items[i].__rqlId;
 				}
 			}
-			return items;
+			return items.filter(Boolean);//delete all empty items
 		},
 
 		select: function () {

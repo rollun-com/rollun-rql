@@ -42,6 +42,7 @@
 		"sort",
 		"match",
 		'like',
+		'alike',
 		"in",
 		"out",
 		"or",
