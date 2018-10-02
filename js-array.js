@@ -19,6 +19,7 @@
 	var nextId = 1;
 
 	function buildRegexpFromValue(value, isCaseSensitive) {
+		value = '' + value;
 		var asteriskReplacement = '___re_asterisk_3_1415926535_8979323846___',
 			questionReplacement = '___re_question_3_1415926535_8979323846___',
 			anchorStart = true,
