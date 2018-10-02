@@ -17,6 +17,45 @@
 		return '"' + str.replace(/"/g, "\\\"") + '"';
 	};
 	var nextId = 1;
+
+	function buildRegexpFromValue(value, isCaseSensitive) {
+		var asteriskReplacement = '___re_asterisk_3_1415926535_8979323846___',
+			questionReplacement = '___re_question_3_1415926535_8979323846___',
+			anchorStart = true,
+			anchorEnd = true;
+		if (value[0] === '*') {
+			anchorStart = false;
+			value = value.slice(0, 1);
+		}
+		if (value.slice(-1) === '*') {
+			anchorStart = false;
+			value = value.slice(0, -1);
+		}
+		var regexp = value.replace(/[*?]/g, function (substring) {
+			return (substring === '*' ? asteriskReplacement : questionReplacement);
+		});
+
+		regexp = value.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+		var searchRegexp = new RegExp('(\Q___re_asterisk_3_1415926535_8979323846___\E|\Q___re_question_3_1415926535_8979323846___\E)', 'g');
+		regexp = value.replace(searchRegexp, function (substring) {
+			return (substring === asteriskReplacement ? '.*' : '.');
+		});
+		if (anchorStart) {
+			regexp = '^' + regexp;
+		}
+		if (anchorEnd) {
+			regexp = regexp + '$';
+		}
+		var regexpObject;
+		if (isCaseSensitive) {
+			regexpObject = new RegExp(regexp, 'g');
+
+		} else {
+			regexpObject = new RegExp(regexp, 'gi');
+		}
+		return regexpObject;
+	}
+
 	exports.jsOperatorMap = {
 		"eq": "===",
 		"ne": "!==",
@@ -58,7 +97,7 @@
 		}),
 
 		like: function (field, value) {
-			var valueRegexp = new RegExp(".+(" + value + ").+", 'g'),
+			var valueRegexp = buildRegexpFromValue(value, true),
 				items = this,
 				result = [];
 			for (var i = 0; i < items.length; i++) {
@@ -71,7 +110,7 @@
 		},
 
 		alike: function (field, value) {
-			var valueRegexp = new RegExp(".+(" + value + ").+", 'gi'),
+			var valueRegexp = buildRegexpFromValue(value, false),
 				items = this,
 				result = [];
 			for (var i = 0; i < items.length; i++) {
