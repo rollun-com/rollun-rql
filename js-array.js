@@ -26,10 +26,10 @@
 			anchorEnd = true;
 		if (value[0] === '*') {
 			anchorStart = false;
-			value = value.slice(0, 1);
+			value = value.slice(1);
 		}
 		if (value.slice(-1) === '*') {
-			anchorStart = false;
+			anchorEnd = false;
 			value = value.slice(0, -1);
 		}
 		var regexp = value.replace(/[*?]/g, function (substring) {
@@ -47,14 +47,8 @@
 		if (anchorEnd) {
 			regexp = regexp + '$';
 		}
-		var regexpObject;
-		if (isCaseSensitive) {
-			regexpObject = new RegExp(regexp, 'g');
-
-		} else {
-			regexpObject = new RegExp(regexp, 'gi');
-		}
-		return regexpObject;
+		var flagsString = (isCaseSensitive ? 'g' : 'gi');
+		return new RegExp(regexp, flagsString);
 	}
 
 	exports.jsOperatorMap = {
