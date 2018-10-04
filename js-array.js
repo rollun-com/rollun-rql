@@ -367,6 +367,9 @@
 		mean: function (property) {
 			return exports.operators.sum.call(this, property) / this.length;
 		},
+		avg: function (property) {
+			return exports.operators.sum.call(this, property) / this.length;
+		},
 		max: reducer(function (a, b) {
 			return Math.max(a, b);
 		}),
