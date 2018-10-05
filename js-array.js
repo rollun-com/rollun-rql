@@ -210,7 +210,7 @@
 					for (var i = 0; i < argc; i++) {
 						var property = args[i],
 							value;
-						if (property === 'string') {
+						if (typeof property === 'string') {
 							value = evaluateProperty(object, property);
 							if (typeof value != "undefined") {
 								selected[property] = value;
@@ -233,8 +233,9 @@
 						emit(selected);
 					}
 				});
-
-			selectionResult.push(selectedAggregates);
+			if ((Object.keys(selectedAggregates)).length > 0) {
+				selectionResult.push(selectedAggregates);
+			}
 			return selectionResult;
 		},
 		unselect: function () {
