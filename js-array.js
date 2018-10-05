@@ -201,19 +201,41 @@
 		},
 
 		select: function () {
-			var args = arguments;
-			var argc = arguments.length;
-			return each(this, function (object, emit) {
-				var selected = {};
-				for (var i = 0; i < argc; i++) {
-					var propertyName = args[i];
-					var value = evaluateProperty(object, propertyName);
-					if (typeof value != "undefined") {
-						selected[propertyName] = value;
+			var args = arguments,
+				argc = arguments.length,
+				items = this,
+				selectedAggregates = {},
+				selectionResult = each(this, function (object, emit) {
+					var selected = {};
+					for (var i = 0; i < argc; i++) {
+						var property = args[i],
+							value;
+						if (property === 'string') {
+							value = evaluateProperty(object, property);
+							if (typeof value != "undefined") {
+								selected[property] = value;
+							}
+						} else {
+							var functionString = args[i].toString(),
+								functionParsingRegexp = new RegExp(/.+op\('(.+)'\)\.call\(this, "(.+)".+/),
+								matches = functionString.match(functionParsingRegexp);
+							if (matches && matches[1] && matches[2]) {
+								var functionName = matches[1],
+									propertyName = matches[2],
+									aggregatedPropertyName = propertyName + '->' + functionName;
+								selectedAggregates[aggregatedPropertyName] = property.call(items);
+							} else {
+								throw new Error('Invalid use of aggregate function in query')
+							}
+						}
 					}
-				}
-				emit(selected);
-			});
+					if ((Object.keys(selected)).length > 0) {
+						emit(selected);
+					}
+				});
+
+			selectionResult.push(selectedAggregates);
+			return selectionResult;
 		},
 		unselect: function () {
 			var args = arguments;
@@ -368,7 +390,7 @@
 			return exports.operators.sum.call(this, property) / this.length;
 		},
 		avg: function (property) {
-			return exports.operators.sum.call(this, property) / this.length;
+			return exports.operators.mean.call(this, property);
 		},
 		max: reducer(function (a, b) {
 			return Math.max(a, b);
@@ -519,7 +541,7 @@
 						if (value instanceof Date) {
 							return value.valueOf();
 						}
-						return "(function(){return op('" + value.name + "').call(this" +
+						return "(function(){ return op('" + value.name + "').call(this" +
 							(value && value.args && value.args.length > 0 ? (", " + each(value.args, function (value, emit) {
 								emit(queryToJS(value));
 							}).join(",")) : "") +
