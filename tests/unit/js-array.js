@@ -1,8 +1,8 @@
 define(function (require) {
 	var test = require('intern!object'),
 		assert = require('intern/chai!assert'),
-		Query = require('../query').Query,
-		executeQuery = require('../js-array').executeQuery;
+		Query = require('../../query').Query,
+		executeQuery = require('../../js-array').executeQuery;
 
 	var data = [
 		{

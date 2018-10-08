@@ -153,7 +153,6 @@
         };
 
         function removeWrongRootNode(query) {
-            var firstChildNodeName = query.args[0].name;
             if (query.args.length < 2) {
                 var newTopTerm = topTerm.args[0];
                 newTopTerm.cache = topTerm.cache;

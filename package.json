@@ -45,9 +45,7 @@
     "intern-geezer": "^2.1.1"
   },
   "scripts": {
-    "test": "intern-client config=test/intern",
-    "test.sauce": "intern-runner config=test/intern",
-    "test.proxy": "intern-runner config=test/intern --proxyOnly"
+    "test": "intern-client config=tests/config"
   },
   "icon": "http://packages.dojofoundation.org/images/persvr.png",
   "dojoBuild": "package.js"
