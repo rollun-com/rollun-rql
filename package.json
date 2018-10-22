@@ -42,7 +42,8 @@
     "promised-io": ">=0.3.0"
   },
   "devDependencies": {
-    "intern-geezer": "^2.1.1"
+    "intern-geezer": "^2.1.1",
+    "amd-loader": "0.0.8"
   },
   "scripts": {
     "test": "intern-client config=tests/config"

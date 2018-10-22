@@ -199,16 +199,15 @@
             var param_index = parseInt(string.substring(1)) - 1;
             return param_index >= 0 && parameters ? parameters[param_index] : undefined;
         }
-        if (string.indexOf(":") > -1) {
-            var parts = string.split(":");
-            converter = exports.converters[parts[0]];
-            if (!converter) {
-                throw new URIError("Unknown converter " + parts[0]);
-            }
-            string = parts.slice(1).join(':');
-        }
+		for (var converterName in exports.converters) {
+			if (exports.converters.hasOwnProperty(converterName) && string.startsWith(converterName + ':')) {
+				var parts = string.split(converterName + ':');
+				converter = exports.converters[converterName];
+				string = parts.slice(1).join(converterName + ':');
+			}
+		}
         return converter(string);
-    };
+	}
 
     var autoConverted = exports.autoConverted = {
         "true": true,

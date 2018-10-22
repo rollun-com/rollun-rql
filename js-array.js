@@ -410,8 +410,39 @@
 				throw new TypeError("More than one object found");
 			}
 			return this[0];
+		},
+
+		isNull: function (property) {
+			var items = this;
+			return filterByPropertyValue(items, property, null)
+		},
+
+		isTrue: function (property) {
+			var items = this;
+			return filterByPropertyValue(items, property, true)
+		},
+
+		isFalse: function (property) {
+			var items = this;
+			return filterByPropertyValue(items, property, false)
 		}
 	};
+
+	function filterByPropertyValue(items, property, value) {
+		var result = [];
+		if (property in items[0]) {
+			for (const item of items) {
+				if (item[property] === value) {
+					result.push(item);
+				}
+			}
+			return result;
+		} else {
+			throw new Error('No property with such name: ' + property)
+		}
+	}
+
+
 	exports.filter = filter;
 
 	function filter(condition, not) {
@@ -467,7 +498,8 @@
 		}
 	};
 	var conditionEvaluator = exports.conditionEvaluator = function (condition) {
-		var jsOperator = exports.jsOperatorMap[term.name];
+		var jsOperator = exports.jsOperatorMap[term.name],
+			js;
 		if (jsOperator) {
 			js += "(function(item){return item." + term[0] + jsOperator + "parameters[" + (index - 1) + "][1];});";
 		}

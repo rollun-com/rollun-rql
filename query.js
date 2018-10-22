@@ -70,6 +70,10 @@
 		"ge",
 		"lt",
 		"gt",
+		'isNull',
+		'isEmpty',
+		'isTrue',
+		'isFalse'
 	];
 	exports.knownScalarOperators = [
 		"mean",
