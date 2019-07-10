@@ -117,9 +117,12 @@ for more less operators):
 * out(&lt;property>,&lt;array-of-values>) - Filters for objects where the specified property's value is not in the provided array
 * contains(&lt;property>,&lt;value | expression>) - Filters for objects where the specified property's value is an array and the array contains any value that equals the provided value or satisfies the provided expression.
 * excludes(&lt;property>,&lt;value | expression>) - Filters for objects where the specified property's value is an array and the array does not contain any of value that equals the provided value or satisfies the provided expression.
+* like(&lt;property>,&lt;value>) - Filters for objects where the specified property's value is equal to the provided value mask (`?` stands for any single character, `*` stands for any number of characters); is case-sensitive
+* alike(&lt;property>,&lt;value>) - Filters for objects where the specified property's value is equal to the provided value mask (`?` stands for any single character, `*` stands for any number of characters); is **NOT** case-sensitive
 * limit(count,start,maxCount) - Returns the given range of objects from the result set
 * and(&lt;query>,&lt;query>,...) - Applies all the given queries
 * or(&lt;query>,&lt;query>,...) - The union of the given queries
+* not(&lt;query>) - negation of the given query
 * eq(&lt;property>,&lt;value>) - Filters for objects where the specified property's value is equal to the provided value
 * lt(&lt;property>,&lt;value>) - Filters for objects where the specified property's value is less than the provided value
 * le(&lt;property>,&lt;value>) - Filters for objects where the specified property's value is less than or equal to the provided value
